@@ -1,0 +1,67 @@
+---
+title: "Plotting with Base R"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Plotting with Base R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.height = 6,
+  fig.width  = 8
+)
+```
+
+```{r setup}
+library(devoutrgl)
+```
+
+
+
+# Base plot 
+
+
+```{r}
+devoutrgl::rgldev(fov = 30, view_angle = 30)
+
+plot(1:10, col = rainbow(10), cex = 5)
+
+invisible(dev.off())
+```
+
+**Use your mouse, mouse buttons and scrollwheel to manipulate the view**
+
+```{r echo=FALSE}
+if (!interactive()) rgl::rglwidget()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,9 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^README.Rmd$
+^README.md$
+working
+vignettes-in-progress
+^data-raw$
+pkgdown
+^grid-raster.rds$

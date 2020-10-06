@@ -1,0 +1,227 @@
+---
+title: "Simple Interactive Examples"
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{Simple Interactive Examples}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse   = TRUE,
+  comment    = "#>", 
+  fig.width  = 8, 
+  fig.height = 8
+)
+library(dplyr)
+library(rgl)
+library(knitr)
+library(ggplot2)
+library(devoutrgl)
+
+set.seed(1)
+```
+
+
+
+
+```{r echo = FALSE, eval = FALSE}
+if (FALSE) {
+  pkgdown::build_site(override = list(destination = "../coolbutuseless.github.io/package/devoutrgl"))
+}
+```
+
+
+# Some simple interactive examples
+
+
+Bar Plot
+------------------------------------------------------------------------------
+
+```{r eval=TRUE}
+library(ggplot2)
+library(devoutrgl)
+
+plot_df <- data.frame(x=c('a', 'b', 'c'), y=4:6)
+p <- ggplot(plot_df) +
+  geom_bar(aes(x, y, fill=x), colour = NA, stat='identity') +
+  labs(title = "{devoutrgl}") +
+  scale_fill_brewer(type = 'seq', palette = 'Blues') + 
+  theme_minimal() + 
+  theme_rgl()
+
+
+devoutrgl::rgldev(fov = 30, view_angle = 30)
+p
+invisible(dev.off())
+```
+
+
+**Use your mouse, mouse buttons and scrollwheel to manipulate the 3d plot**
+
+```{r echo=FALSE}
+if (!interactive()) rgl::rglwidget()
+```
+
+
+
+Base plot
+------------------------------------------------------------------------------
+
+
+```{r}
+devoutrgl::rgldev(fov = 30, view_angle = 30) 
+pie(c(cool=1, but = 2, use=3, less = 4))
+dev.off()
+```
+
+
+**Use your mouse, mouse buttons and scrollwheel to manipulate the 3d plot**
+
+```{r echo=FALSE}
+if (!interactive()) rgl::rglwidget()
+```
+
+
+
+
+Polygon with a hole
+------------------------------------------------------------------------------
+
+
+
+```{r}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# polygons_df - data.frame of polygon vertices with group/subgroups
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+polygons_df <- df <- data.frame(
+  x        = c(4, 8, 8, 4,   6, 7, 7, 6),
+  y        = c(4, 4, 8, 8,   6, 6, 7, 7),
+  group    = c(1, 1, 1, 1,   1, 1, 1, 1),
+  subgroup = c(1, 1, 1, 1,   2, 2, 2, 2)
+)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Plot
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+p <- ggplot(polygons_df) +
+  geom_polygon(aes(x, y, group=group, subgroup=subgroup)) +
+  geom_path(aes(x, y, group = interaction(group, subgroup)), colour = 'red') +
+  theme_bw() + 
+  coord_equal() + 
+  labs(title = "{devoutrgl} polygon with a hole")
+
+rgldev(fov = 30, view_angle = 30)
+p
+invisible(dev.off())
+```
+
+**Use your mouse, mouse buttons and scrollwheel to manipulate the 3d plot**
+
+```{r echo=FALSE}
+if (!interactive()) rgl::rglwidget()
+```
+
+
+
+
+Density Plot
+------------------------------------------------------------------------------
+
+```{r eval=TRUE}
+library(ggplot2)
+library(devoutrgl)
+
+p <- ggplot(mtcars) +
+  geom_density(aes(mpg, fill=as.factor(cyl)), colour = '#ffffff00') +
+  theme(legend.position = 'none') +
+  scale_fill_brewer(palette = 'Set1') + 
+  theme_bw() + 
+  theme_rgl()
+
+
+rgldev(fov = 30, view_angle = 30)
+p
+invisible(dev.off())
+```
+
+**Use your mouse, mouse buttons and scrollwheel to manipulate the 3d plot**
+
+```{r echo=FALSE}
+if (!interactive()) rgl::rglwidget()
+```
+
+
+
+
+Hex plot
+------------------------------------------------------------------------------
+
+
+```{r}
+set.seed(1)
+a    <- data.frame(x=rnorm(20000, 10  , 1.9), y=rnorm(20000, 10  , 1.2) )
+b    <- data.frame(x=rnorm(20000, 14.5, 1.9), y=rnorm(20000, 14.5, 1.9) )
+c    <- data.frame(x=rnorm(20000, 9.5 , 1.9), y=rnorm(20000, 15.5, 1.9) )
+data <- rbind(a,b,c)
+
+#Lines
+p <- ggplot(data, aes(x=x, y=y)) +
+  geom_hex(bins = 10, size = 0.5, color = "black") +
+  scale_fill_viridis_c(option = "C") + 
+  coord_fixed() 
+
+
+rgldev(fov = 30, view = 'flat', view_angle = -20, view_flat_angle = -60)
+p
+invisible(dev.off())
+```
+
+**Use your mouse, mouse buttons and scrollwheel to manipulate the 3d plot**
+
+```{r echo=FALSE}
+if (!interactive()) rgl::rglwidget()
+```
+
+
+
+
+Generating the logo for this package
+------------------------------------------------------------------------------
+
+```{r eval = TRUE}
+library(ggplot2)
+library(dplyr)
+
+hex_df <- tibble(
+  rad = seq(0, 2*pi, pi/3),
+  x   = sin(rad),
+  y   = cos(rad)
+)
+
+p <- ggplot(hex_df) +
+  geom_polygon(aes(x, y), fill = '#002366', colour = '#436B9530') +
+  annotate('text', x = 0, y = 0, label = "/dev/out/\nrgl", size = 20, color = 'grey90') +
+  coord_fixed() +
+  theme_minimal(25) + 
+  theme_rgl() + 
+  theme(panel.grid = element_blank())
+
+devoutrgl::rgldev(
+  width        = 5.5,
+  fov          = 30,
+  view3d_args  = list(-45, 0, zoom = 0.8)
+)
+
+p
+invisible(dev.off())
+```
+
+**Use your mouse, mouse buttons and scrollwheel to manipulate the 3d plot**
+
+```{r echo=FALSE}
+if (!interactive()) rgl::rglwidget()
+```
+
+
